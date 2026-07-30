@@ -1,1 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Tilawah SDIT Nurul Ilmi</title>
+    
+    <!-- Link ke File CSS Eksternal -->
+    <link rel="stylesheet" href="style.css">
 
+    <!-- Tailwind CSS (via CDN untuk GitHub Pages) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        islamic: {
+                            50: '#f2fdf5',
+                            100: '#e1fbe8',
+                            500: '#22c55e',
+                            700: '#15803d',
+                            900: '#064e3b',
+                            gold: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons (Phosphor) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="text-gray-800 antialiased overflow-x-hidden">
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="loader mb-4"></div>
+        <p class="text-islamic-900 font-semibold animate-pulse">Memproses Data...</p>
+    </div>
+
+    <!-- VIEW: LOGIN -->
+    <div id="view-login" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-islamic-900 to-islamic-700 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-islamic-gold rounded-full opacity-20 blur-xl"></div>
+            
+            <div class="text-center mb-8">
+                <i class="ph-fill ph-mosque text-5xl text-islamic-900 mb-2"></i>
+                <h1 class="text-2xl font-bold text-gray-800">SDIT Nurul Ilmi</h1>
+                <p class="text-sm text-gray-500">Sistem Laporan Tilawah Harian</p>
+            </div>
+            
+            <form id="form-login">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <div class="relative">
+                        <i class="ph ph-user absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="login-username" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 focus:border-islamic-500 outline-none transition-all">
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        <i class="ph ph-lock absolute left-3 top-3 text-gray-400"></i>
+                        <input type="password" id="login-password" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 focus:border-islamic-500 outline-none transition-all">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-islamic-900 hover:bg-islamic-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-lg shadow-islamic-900/30">
+                    Masuk Sekarang
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW: MAIN APP (Hidden initially) -->
+    <div id="view-app" class="hide min-h-screen flex flex-col md:flex-row">
+        
+        <aside class="bg-white w-full md:w-64 flex-shrink-0 shadow-xl z-20 transition-all duration-300 flex flex-col h-auto md:h-screen sticky top-0">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-islamic-900 text-white">
+                <div class="flex items-center gap-3">
+                    <i class="ph-fill ph-mosque text-2xl text-islamic-gold"></i>
+                    <div>
+                        <h2 class="font-bold leading-tight">Tilawah App</h2>
+                        <p class="text-xs text-islamic-100">SDIT Nurul Ilmi</p>
+                    </div>
+                </div>
+                <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+                    <i class="ph ph-list text-2xl"></i>
+                </button>
+            </div>
+            
+            <div id="mobile-menu" class="hidden md:flex flex-col flex-grow p-4 gap-2 overflow-y-auto">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-2">Menu Utama</p>
+                
+                <button onclick="navigate('dashboard')" id="nav-dashboard" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors admin-only">
+                    <i class="ph ph-squares-four text-xl"></i> Dashboard
+                </button>
+                
+                <button onclick="navigate('laporan')" id="nav-laporan" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors">
+                    <i class="ph ph-book-open-text text-xl"></i> Lapor Tilawah
+                </button>
+                
+                <button onclick="navigate('rekap')" id="nav-rekap" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors admin-only">
+                    <i class="ph ph-whatsapp-logo text-xl"></i> Rekap Harian
+                </button>
+                
+                <button onclick="navigate('guru')" id="nav-guru" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors admin-only">
+                    <i class="ph ph-users text-xl"></i> Data Guru
+                </button>
+
+                <div class="mt-auto pt-4 border-t border-gray-100">
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-2">
+                        <div class="w-10 h-10 rounded-full bg-islamic-100 text-islamic-900 flex items-center justify-center font-bold">
+                            <span id="user-initial">U</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p id="user-name-display" class="font-semibold text-sm truncate">User Name</p>
+                            <p id="user-role-display" class="text-xs text-islamic-700">Role</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="flex items-center gap-3 p-3 w-full text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <i class="ph ph-sign-out text-xl"></i> Keluar
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-grow p-4 md:p-8 overflow-y-auto bg-gray-50 h-screen">
+            
+            <!-- CONTENT: DASHBOARD -->
+            <div id="content-dashboard" class="content-section hide">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Dashboard Statistik</h2>
+                        <p class="text-gray-500">Ringkasan aktivitas tilawah harian.</p>
+                    </div>
+                    <button onclick="loadDashboard()" class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                        <i class="ph ph-arrows-clockwise"></i> Refresh Data
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-blue-500">
+                        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 text-2xl">
+                            <i class="ph-fill ph-users"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Total Guru</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="stat-total">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-green-500">
+                        <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-500 text-2xl">
+                            <i class="ph-fill ph-check-circle"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Sudah Lapor Hari Ini</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="stat-sudah">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-red-500">
+                        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 text-2xl">
+                            <i class="ph-fill ph-warning-circle"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Belum Lapor</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="stat-belum">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-islamic-900 p-5 rounded-xl shadow-lg border border-islamic-700 flex flex-col justify-center relative overflow-hidden">
+                        <div class="absolute right-[-20px] top-[-20px] opacity-10">
+                            <i class="ph-fill ph-chart-pie-slice text-9xl text-white"></i>
+                        </div>
+                        <p class="text-sm text-islamic-100 font-medium z-10">Progress Hari Ini</p>
+                        <div class="flex items-end gap-2 z-10">
+                            <h3 class="text-4xl font-bold text-white" id="stat-progress">0%</h3>
+                        </div>
+                        <div class="w-full bg-islamic-700 rounded-full h-1.5 mt-3 z-10">
+                            <div class="bg-islamic-gold h-1.5 rounded-full transition-all duration-1000" id="stat-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-1">
+                        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Rincian Laporan (Hari Ini)</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span>✅ Khalas Juz</span>
+                                <span class="font-semibold" id="det-khalas">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span>Ⓜ️ Muroja'ah</span>
+                                <span class="font-semibold" id="det-murojaah">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span>💬 Hafalan</span>
+                                <span class="font-semibold" id="det-hafalan">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span>❌ Tidak Tilawah</span>
+                                <span class="font-semibold" id="det-tidak">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-2">
+                        <h3 class="font-bold text-gray-800 mb-4">Tren Partisipasi (30 Hari Terakhir)</h3>
+                        <div class="relative h-64 w-full">
+                            <canvas id="tilawahChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT: LAPORAN -->
+            <div id="content-laporan" class="content-section hide">
+                <div class="max-w-3xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="bg-islamic-900 p-6 text-white text-center">
+                            <h2 class="text-2xl font-bold">Form Laporan Tilawah</h2>
+                            <p class="text-islamic-100 mt-1" id="form-date-display"></p>
+                        </div>
+                        
+                        <div class="p-6 md:p-8">
+                            <form id="form-submit-laporan">
+                                <input type="hidden" id="lap-tanggal">
+                                <div class="mb-5">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Guru</label>
+                                    <input type="text" id="lap-nama" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-semibold cursor-not-allowed">
+                                </div>
+                                
+                                <div class="mb-5">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Status Tilawah <span class="text-red-500">*</span></label>
+                                    <select id="lap-status" required onchange="toggleJuzInput()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 outline-none bg-white">
+                                        <option value="">-- Pilih Status --</option>
+                                        <option value="✅ Khalas Juz">✅ Khalas 1 Juz</option>
+                                        <option value="📖 Tilawah sebagian">📖 Tilawah sebagian (beberapa lembar)</option>
+                                        <option value="Ⓜ️ Muroja'ah">Ⓜ️ Muroja'ah</option>
+                                        <option value="💬 Hafalan">💬 Hafalan</option>
+                                        <option value="🩸 Halangan">🩸 Halangan (Khusus Ibu)</option>
+                                        <option value="❌ Tidak Tilawah">❌ Tidak Tilawah</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-5 hide transition-all duration-300" id="juz-container">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Selesai di Juz <span class="text-red-500">*</span></label>
+                                    <select id="lap-juz" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 outline-none bg-white">
+                                        <option value="">-- Pilih Juz --</option>
+                                        <!-- JS Populate 1-30 -->
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-8">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Catatan (Opsional)</label>
+                                    <textarea id="lap-catatan" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 outline-none placeholder-gray-400" placeholder="Contoh: Alhamdulillah lancar..."></textarea>
+                                </div>
+                                
+                                <button type="submit" class="w-full bg-islamic-500 hover:bg-islamic-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-green-500/30 flex justify-center items-center gap-2 text-lg">
+                                    <i class="ph-bold ph-paper-plane-tilt"></i> Kirim Laporan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Riwayat -->
+                    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2"><i class="ph-fill ph-clock-counter-clockwise text-islamic-500"></i> Riwayat Laporan Saya</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-50 text-gray-600 text-sm">
+                                        <th class="p-3 border-b">Tanggal</th>
+                                        <th class="p-3 border-b">Status</th>
+                                        <th class="p-3 border-b">Detail</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="riwayat-body" class="text-sm">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT: REKAP WA -->
+            <div id="content-rekap" class="content-section hide">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Rekap Harian WhatsApp</h2>
+                        <p class="text-gray-500">Generate laporan format WhatsApp untuk di-share.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
+                        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Filter Tanggal</h3>
+                        <input type="date" id="rekap-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4">
+                        <button onclick="generateWA()" class="w-full bg-islamic-900 text-white py-2 rounded-lg hover:bg-islamic-700 transition">
+                            Generate Format
+                        </button>
+                    </div>
+                    
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative">
+                        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Hasil Teks</h3>
+                        <textarea id="rekap-result" rows="20" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono text-gray-700 whitespace-pre-wrap outline-none" readonly></textarea>
+                        
+                        <div class="flex gap-2 mt-4 justify-end">
+                            <button onclick="copyWA()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 font-medium">
+                                <i class="ph ph-copy"></i> Copy Teks
+                            </button>
+                            <button onclick="shareWA()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition flex items-center gap-2 font-medium shadow-md shadow-green-500/20">
+                                <i class="ph ph-whatsapp-logo"></i> Share ke Grup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT: DATA GURU -->
+            <div id="content-guru" class="content-section hide">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Manajemen Data Guru</h2>
+                        <p class="text-gray-500">Kelola akun dan informasi asatidz.</p>
+                    </div>
+                    <button onclick="openModalGuru()" class="bg-islamic-900 text-white px-4 py-2 rounded-lg hover:bg-islamic-700 transition shadow-sm flex items-center gap-2">
+                        <i class="ph-bold ph-plus"></i> Tambah Guru
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-600 text-sm border-b">
+                                    <th class="p-4 font-semibold">Nama</th>
+                                    <th class="p-4 font-semibold">Username</th>
+                                    <th class="p-4 font-semibold">Jabatan</th>
+                                    <th class="p-4 font-semibold">Status</th>
+                                    <th class="p-4 font-semibold text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-guru-body" class="text-sm divide-y divide-gray-100">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL GURU -->
+    <div id="modal-guru" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hide opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95 transition-transform duration-300" id="modal-guru-content">
+            <div class="flex justify-between items-center p-5 border-b border-gray-100">
+                <h3 class="font-bold text-lg text-gray-800" id="modal-title">Tambah Guru</h3>
+                <button onclick="closeModalGuru()" class="text-gray-400 hover:text-gray-600"><i class="ph-bold ph-x text-xl"></i></button>
+            </div>
+            <div class="p-5">
+                <form id="form-guru">
+                    <input type="hidden" id="guru-action" value="add">
+                    <input type="hidden" id="guru-row" value="">
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                        <input type="text" id="guru-nama" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                            <input type="text" id="guru-username" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="text" id="guru-password" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500" placeholder="Kosongi jika tdk diubah">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                            <select id="guru-jk" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500 bg-white">
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select id="guru-status" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500 bg-white">
+                                <option value="Aktif">Aktif</option>
+                                <option value="Tidak Aktif">Tidak Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
+                        <input type="text" id="guru-jabatan" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500">
+                    </div>
+                    
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="closeModalGuru()" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Batal</button>
+                        <button type="submit" class="px-4 py-2 text-white bg-islamic-900 rounded-lg hover:bg-islamic-700 transition shadow-md shadow-islamic-900/20">Simpan Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Link Script JS Eksternal -->
+    <script src="script.js"></script>
+</body>
+</html>
