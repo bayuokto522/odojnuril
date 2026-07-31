@@ -21,7 +21,7 @@ async function fetchGAS(action, payload = {}) {
         if(!data.success && data.message) {
             throw new Error(data.message);
         }
-        return data;
+        return data; // Mengembalikan object json dari backend
     } catch (error) {
         throw error;
     }
@@ -52,7 +52,6 @@ const formatDisplayDate = (date) => {
 };
 
 window.onload = () => {
-    // Event listeners
     document.getElementById('form-login').addEventListener('submit', handleLogin);
     document.getElementById('form-submit-laporan').addEventListener('submit', submitLaporan);
     document.getElementById('form-guru').addEventListener('submit', saveGuru);
@@ -70,11 +69,27 @@ window.onload = () => {
     document.getElementById('form-date-display').innerText = formatDisplayDate(new Date());
     document.getElementById('rekap-date').value = getTodayString();
 
-    // Cek Session Storage
     const session = localStorage.getItem('tilawahSession');
     if(session) {
-        currentUser = JSON.parse(session);
-        initApp();
+        try {
+            let parsedSession = JSON.parse(session);
+            // Perbaikan untuk mencegah error (jika sesi yang tersimpan formatnya salah)
+            if(parsedSession.success && parsedSession.data) {
+                parsedSession = parsedSession.data;
+            }
+            
+            // Validasi apakah user valid
+            if(parsedSession && parsedSession.nama) {
+                currentUser = parsedSession;
+                localStorage.setItem('tilawahSession', JSON.stringify(currentUser)); // perbarui dengan format benar
+                initApp();
+            } else {
+                // Sesi rusak, hapus sesi
+                logout(); 
+            }
+        } catch(e) {
+            logout();
+        }
     }
 };
 
@@ -87,9 +102,11 @@ async function handleLogin(e) {
     try {
         const res = await fetchGAS('login', { username: user, password: pass });
         hideLoading();
+        
         if(res.success) {
-            currentUser = res;
-            localStorage.setItem('tilawahSession', JSON.stringify(res));
+            // FIX: Simpan res.data (bukan res wrapper-nya)
+            currentUser = res.data; 
+            localStorage.setItem('tilawahSession', JSON.stringify(res.data));
             initApp();
         }
     } catch (err) {
@@ -241,7 +258,7 @@ async function submitLaporan(e) {
         hideLoading();
         Swal.fire({
             title: 'Alhamdulillah',
-            text: res.message,
+            text: res.data.message, // FIX: Gunakan res.data.message
             icon: 'success',
             confirmButtonColor: '#064e3b'
         });
