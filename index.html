@@ -247,16 +247,33 @@
                                 </div>
                                 
                                 <div class="mb-5">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Status Tilawah <span class="text-red-500">*</span></label>
-                                    <select id="lap-status" required onchange="toggleJuzInput()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 outline-none bg-white">
-                                        <option value="">-- Pilih Status --</option>
-                                        <option value="✅ Khalas Juz">✅ Khalas 1 Juz</option>
-                                        <option value="📖 Tilawah sebagian">📖 Tilawah sebagian (beberapa lembar)</option>
-                                        <option value="Ⓜ️ Muroja'ah">Ⓜ️ Muroja'ah</option>
-                                        <option value="💬 Hafalan">💬 Hafalan</option>
-                                        <option value="🩸 Halangan">🩸 Halangan (Khusus Ibu)</option>
-                                        <option value="❌ Tidak Tilawah">❌ Tidak Tilawah</option>
-                                    </select>
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">Status Tilawah (Bisa pilih lebih dari satu) <span class="text-red-500">*</span></label>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="lap-status-group">
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                            <input type="checkbox" name="status" value="✅ Khalas Juz" id="status-khalas" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm text-gray-700">✅ Khalas 1 Juz</span>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                            <input type="checkbox" name="status" value="📖 Tilawah sebagian" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm text-gray-700">📖 Tilawah sebagian</span>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                            <input type="checkbox" name="status" value="Ⓜ️ Muroja'ah" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm text-gray-700">Ⓜ️ Muroja'ah</span>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                            <input type="checkbox" name="status" value="💬 Hafalan" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm text-gray-700">💬 Hafalan</span>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                            <input type="checkbox" name="status" value="🩸 Halangan" onchange="handleStatusChange(this)" class="w-5 h-5 text-red-500 border-gray-300 rounded focus:ring-red-500">
+                                            <span class="ml-3 text-sm text-gray-700">🩸 Halangan (Khusus Ibu)</span>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                            <input type="checkbox" name="status" value="❌ Tidak Tilawah" onchange="handleStatusChange(this)" class="w-5 h-5 text-red-500 border-gray-300 rounded focus:ring-red-500">
+                                            <span class="ml-3 text-sm text-gray-700">❌ Tidak Tilawah</span>
+                                        </label>
+                                    </div>
                                 </div>
                                 
                                 <div class="mb-5 hide transition-all duration-300" id="juz-container">
