@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Tilawah SDIT Nurul Ilmi</title>
     
-    <!-- Link ke File CSS Eksternal -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Tailwind CSS (via CDN untuk GitHub Pages) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,40 +20,46 @@
                             900: '#064e3b',
                             gold: '#d97706'
                         }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Icons (Phosphor) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #064e3b; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .hide { display: none !important; }
+        .nav-active { background-color: #064e3b; color: white; border-radius: 0.5rem; }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #064e3b; }
+    </style>
 </head>
 <body class="text-gray-800 antialiased overflow-x-hidden">
 
-    <!-- Loading Overlay -->
     <div id="loading-overlay">
         <div class="loader mb-4"></div>
         <p class="text-islamic-900 font-semibold animate-pulse">Memproses Data...</p>
     </div>
 
-    <!-- VIEW: LOGIN -->
     <div id="view-login" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-islamic-900 to-islamic-700 p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative overflow-hidden">
             <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-islamic-gold rounded-full opacity-20 blur-xl"></div>
-            
             <div class="text-center mb-8 flex flex-col items-center">
-                <!-- LOGO KEDUA (Halaman Login) -->
-                <img src="WhatsApp Image 2026-07-30 at 11.53.13.jpeg" alt="Logo SDIT Nurul Ilmi" class="w-24 h-24 object-contain mb-4">
+                <!-- LOGO HALAMAN LOGIN -->
+                <img src="WhatsApp Image 2026-07-30 at 11.53.13.jpeg" alt="Logo SDIT Nurul Ilmi" class="w-24 h-24 object-contain mb-4 rounded-full shadow-sm">
                 <h1 class="text-2xl font-bold text-gray-800">SDIT Nurul Ilmi</h1>
                 <p class="text-sm text-gray-500">Sistem Laporan Tilawah Harian</p>
             </div>
@@ -66,30 +69,28 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
                     <div class="relative">
                         <i class="ph ph-user absolute left-3 top-3 text-gray-400"></i>
-                        <input type="text" id="login-username" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 focus:border-islamic-500 outline-none transition-all">
+                        <input type="text" id="login-username" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 focus:border-islamic-500 outline-none">
                     </div>
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <div class="relative">
                         <i class="ph ph-lock absolute left-3 top-3 text-gray-400"></i>
-                        <input type="password" id="login-password" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 focus:border-islamic-500 outline-none transition-all">
+                        <input type="password" id="login-password" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 focus:border-islamic-500 outline-none">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-islamic-900 hover:bg-islamic-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-lg shadow-islamic-900/30">
+                <button type="submit" class="w-full bg-islamic-900 hover:bg-islamic-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-lg">
                     Masuk Sekarang
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- VIEW: MAIN APP (Hidden initially) -->
     <div id="view-app" class="hide min-h-screen flex flex-col md:flex-row">
-        
-        <aside class="bg-white w-full md:w-64 flex-shrink-0 shadow-xl z-20 transition-all duration-300 flex flex-col h-auto md:h-screen sticky top-0">
+        <aside class="bg-white w-full md:w-64 flex-shrink-0 shadow-xl z-20 flex flex-col h-auto md:h-screen sticky top-0">
             <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-islamic-900 text-white">
                 <div class="flex items-center gap-3">
-                    <!-- LOGO PERTAMA (Sidebar Setelah Login) -->
+                    <!-- LOGO SIDEBAR SETELAH LOGIN -->
                     <img src="logo.png" alt="Logo 1 Day 1 Juz" class="w-10 h-10 object-contain rounded-full bg-white p-1">
                     <div>
                         <h2 class="font-bold leading-tight">Tilawah App</h2>
@@ -104,19 +105,16 @@
             <div id="mobile-menu" class="hidden md:flex flex-col flex-grow p-4 gap-2 overflow-y-auto">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-2">Menu Utama</p>
                 
-                <button onclick="navigate('dashboard')" id="nav-dashboard" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors admin-only">
+                <button onclick="navigate('dashboard')" id="nav-dashboard" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg admin-only">
                     <i class="ph ph-squares-four text-xl"></i> Dashboard
                 </button>
-                
-                <button onclick="navigate('laporan')" id="nav-laporan" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors">
+                <button onclick="navigate('laporan')" id="nav-laporan" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg">
                     <i class="ph ph-book-open-text text-xl"></i> Lapor Tilawah
                 </button>
-                
-                <button onclick="navigate('rekap')" id="nav-rekap" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors admin-only">
+                <button onclick="navigate('rekap')" id="nav-rekap" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg admin-only">
                     <i class="ph ph-whatsapp-logo text-xl"></i> Rekap Harian
                 </button>
-                
-                <button onclick="navigate('guru')" id="nav-guru" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg transition-colors admin-only">
+                <button onclick="navigate('guru')" id="nav-guru" class="flex items-center gap-3 p-3 text-left text-gray-600 hover:bg-islamic-50 hover:text-islamic-900 rounded-lg admin-only">
                     <i class="ph ph-users text-xl"></i> Data Guru
                 </button>
 
@@ -126,11 +124,11 @@
                             <span id="user-initial">U</span>
                         </div>
                         <div class="overflow-hidden">
-                            <p id="user-name-display" class="font-semibold text-sm truncate">User Name</p>
+                            <p id="user-name-display" class="font-semibold text-sm truncate">User</p>
                             <p id="user-role-display" class="text-xs text-islamic-700">Role</p>
                         </div>
                     </div>
-                    <button onclick="logout()" class="flex items-center gap-3 p-3 w-full text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <button onclick="logout()" class="flex items-center gap-3 p-3 w-full text-left text-red-600 hover:bg-red-50 rounded-lg">
                         <i class="ph ph-sign-out text-xl"></i> Keluar
                     </button>
                 </div>
@@ -139,100 +137,70 @@
 
         <main class="flex-grow p-4 md:p-8 overflow-y-auto bg-gray-50 h-screen">
             
-            <!-- CONTENT: DASHBOARD -->
+            <!-- Dashboard -->
             <div id="content-dashboard" class="content-section hide">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div class="flex justify-between items-center mb-8">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800">Dashboard Statistik</h2>
-                        <p class="text-gray-500">Ringkasan aktivitas tilawah harian.</p>
                     </div>
-                    <button onclick="loadDashboard()" class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
-                        <i class="ph ph-arrows-clockwise"></i> Refresh Data
+                    <button onclick="loadDashboard()" class="bg-white border border-gray-200 px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm">
+                        <i class="ph ph-arrows-clockwise"></i> Refresh
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-blue-500">
-                        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 text-2xl">
-                            <i class="ph-fill ph-users"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Total Guru</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="stat-total">0</h3>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-l-blue-500">
+                        <p class="text-sm text-gray-500 font-medium">Total Guru</p>
+                        <h3 class="text-2xl font-bold" id="stat-total">0</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-green-500">
-                        <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-500 text-2xl">
-                            <i class="ph-fill ph-check-circle"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Sudah Lapor Hari Ini</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="stat-sudah">0</h3>
-                        </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-l-green-500">
+                        <p class="text-sm text-gray-500 font-medium">Sudah Lapor</p>
+                        <h3 class="text-2xl font-bold" id="stat-sudah">0</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-l-red-500">
-                        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 text-2xl">
-                            <i class="ph-fill ph-warning-circle"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Belum Lapor</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="stat-belum">0</h3>
-                        </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-l-red-500">
+                        <p class="text-sm text-gray-500 font-medium">Belum Lapor</p>
+                        <h3 class="text-2xl font-bold" id="stat-belum">0</h3>
                     </div>
-                    <div class="bg-islamic-900 p-5 rounded-xl shadow-lg border border-islamic-700 flex flex-col justify-center relative overflow-hidden">
-                        <div class="absolute right-[-20px] top-[-20px] opacity-10">
-                            <i class="ph-fill ph-chart-pie-slice text-9xl text-white"></i>
-                        </div>
+                    <div class="bg-islamic-900 p-5 rounded-xl shadow-lg relative overflow-hidden">
                         <p class="text-sm text-islamic-100 font-medium z-10">Progress Hari Ini</p>
-                        <div class="flex items-end gap-2 z-10">
-                            <h3 class="text-4xl font-bold text-white" id="stat-progress">0%</h3>
-                        </div>
+                        <h3 class="text-3xl font-bold text-white z-10" id="stat-progress">0%</h3>
                         <div class="w-full bg-islamic-700 rounded-full h-1.5 mt-3 z-10">
-                            <div class="bg-islamic-gold h-1.5 rounded-full transition-all duration-1000" id="stat-bar" style="width: 0%"></div>
+                            <div class="bg-islamic-gold h-1.5 rounded-full" id="stat-bar" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-1">
-                        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Rincian Laporan (Hari Ini)</h3>
+                    <div class="bg-white rounded-xl shadow-sm p-6 lg:col-span-1">
+                        <h3 class="font-bold border-b pb-2 mb-4">Rincian Laporan (Hari Ini)</h3>
                         <div class="space-y-4">
                             <div class="flex justify-between items-center">
-                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span>✅ Khalas Juz</span>
-                                <span class="font-semibold" id="det-khalas">0</span>
+                                <span>✅ Khalas Juz</span><span class="font-semibold" id="det-khalas">0</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-500"></span>📖 Tilawah Sebagian</span>
-                                <span class="font-semibold" id="det-sebagian">0</span>
+                                <span>📖 Tilawah Sebagian</span><span class="font-semibold" id="det-sebagian">0</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span>Ⓜ️ Muroja'ah</span>
-                                <span class="font-semibold" id="det-murojaah">0</span>
+                                <span>Ⓜ️ Muroja'ah</span><span class="font-semibold" id="det-murojaah">0</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span>💬 Hafalan</span>
-                                <span class="font-semibold" id="det-hafalan">0</span>
+                                <span>💬 Hafalan</span><span class="font-semibold" id="det-hafalan">0</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span>❌ Tidak Tilawah</span>
-                                <span class="font-semibold" id="det-tidak">0</span>
+                                <span>❌ Tidak Tilawah</span><span class="font-semibold" id="det-tidak">0</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-2">
-                        <h3 class="font-bold text-gray-800 mb-4">Tren Partisipasi (30 Hari Terakhir)</h3>
-                        <div class="relative h-64 w-full">
-                            <canvas id="tilawahChart"></canvas>
-                        </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 lg:col-span-2">
+                        <h3 class="font-bold mb-4">Tren Partisipasi (7 Hari Terakhir)</h3>
+                        <div class="relative h-64 w-full"><canvas id="tilawahChart"></canvas></div>
                     </div>
                 </div>
             </div>
 
-            <!-- CONTENT: LAPORAN -->
             <div id="content-laporan" class="content-section hide">
                 <div class="max-w-3xl mx-auto">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
                         <div class="bg-islamic-900 p-6 text-white text-center">
                             <h2 class="text-2xl font-bold">Form Laporan Tilawah</h2>
                             <p class="text-islamic-100 mt-1" id="form-date-display"></p>
@@ -242,54 +210,53 @@
                             <form id="form-submit-laporan">
                                 <input type="hidden" id="lap-tanggal">
                                 <div class="mb-5">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Guru</label>
+                                    <label class="block text-sm font-medium mb-2">Nama Guru</label>
                                     <input type="text" id="lap-nama" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-semibold cursor-not-allowed">
                                 </div>
                                 
                                 <div class="mb-5">
-                                    <label class="block text-sm font-medium text-gray-700 mb-3">Status Tilawah (Bisa pilih lebih dari satu) <span class="text-red-500">*</span></label>
+                                    <label class="block text-sm font-medium mb-3">Status Tilawah (Bisa pilih lebih dari satu) <span class="text-red-500">*</span></label>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="lap-status-group">
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                                            <input type="checkbox" name="status" value="✅ Khalas Juz" id="status-khalas" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
-                                            <span class="ml-3 text-sm text-gray-700">✅ Khalas 1 Juz</span>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <input type="checkbox" name="status" value="✅ Khalas Juz" id="status-khalas" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm">✅ Khalas 1 Juz</span>
                                         </label>
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                                            <input type="checkbox" name="status" value="📖 Tilawah sebagian" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
-                                            <span class="ml-3 text-sm text-gray-700">📖 Tilawah sebagian</span>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <input type="checkbox" name="status" value="📖 Tilawah sebagian" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm">📖 Tilawah sebagian</span>
                                         </label>
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                                            <input type="checkbox" name="status" value="Ⓜ️ Muroja'ah" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
-                                            <span class="ml-3 text-sm text-gray-700">Ⓜ️ Muroja'ah</span>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <input type="checkbox" name="status" value="Ⓜ️ Muroja'ah" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm">Ⓜ️ Muroja'ah</span>
                                         </label>
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                                            <input type="checkbox" name="status" value="💬 Hafalan" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 border-gray-300 rounded focus:ring-islamic-500">
-                                            <span class="ml-3 text-sm text-gray-700">💬 Hafalan</span>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <input type="checkbox" name="status" value="💬 Hafalan" onchange="handleStatusChange(this)" class="w-5 h-5 text-islamic-500 rounded focus:ring-islamic-500">
+                                            <span class="ml-3 text-sm">💬 Hafalan</span>
                                         </label>
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                                            <input type="checkbox" name="status" value="🩸 Halangan" onchange="handleStatusChange(this)" class="w-5 h-5 text-red-500 border-gray-300 rounded focus:ring-red-500">
-                                            <span class="ml-3 text-sm text-gray-700">🩸 Halangan (Khusus Ibu)</span>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <input type="checkbox" name="status" value="🩸 Halangan" onchange="handleStatusChange(this)" class="w-5 h-5 text-red-500 rounded focus:ring-red-500">
+                                            <span class="ml-3 text-sm">🩸 Halangan (Khusus Ibu)</span>
                                         </label>
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                                            <input type="checkbox" name="status" value="❌ Tidak Tilawah" onchange="handleStatusChange(this)" class="w-5 h-5 text-red-500 border-gray-300 rounded focus:ring-red-500">
-                                            <span class="ml-3 text-sm text-gray-700">❌ Tidak Tilawah</span>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <input type="checkbox" name="status" value="❌ Tidak Tilawah" onchange="handleStatusChange(this)" class="w-5 h-5 text-red-500 rounded focus:ring-red-500">
+                                            <span class="ml-3 text-sm">❌ Tidak Tilawah</span>
                                         </label>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-5 hide transition-all duration-300" id="juz-container">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Selesai di Juz <span class="text-red-500">*</span></label>
+                                <div class="mb-5 hide transition-all" id="juz-container">
+                                    <label class="block text-sm font-medium mb-2">Selesai di Juz <span class="text-red-500">*</span></label>
                                     <select id="lap-juz" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 outline-none bg-white">
                                         <option value="">-- Pilih Juz --</option>
-                                        <!-- JS Populate 1-30 -->
                                     </select>
                                 </div>
                                 
                                 <div class="mb-8">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Catatan (Opsional)</label>
-                                    <textarea id="lap-catatan" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 outline-none placeholder-gray-400" placeholder="Contoh: Alhamdulillah lancar..."></textarea>
+                                    <label class="block text-sm font-medium mb-2">Catatan (Opsional)</label>
+                                    <textarea id="lap-catatan" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-islamic-500 outline-none placeholder-gray-400"></textarea>
                                 </div>
                                 
-                                <button type="submit" class="w-full bg-islamic-500 hover:bg-islamic-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-green-500/30 flex justify-center items-center gap-2 text-lg">
+                                <button type="submit" class="w-full bg-islamic-500 hover:bg-islamic-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-green-500/30 flex justify-center items-center gap-2">
                                     <i class="ph-bold ph-paper-plane-tilt"></i> Kirim Laporan
                                 </button>
                             </form>
@@ -297,53 +264,38 @@
                     </div>
 
                     <!-- Riwayat -->
-                    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2"><i class="ph-fill ph-clock-counter-clockwise text-islamic-500"></i> Riwayat Laporan Saya</h3>
+                    <div class="mt-8 bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                        <h3 class="font-bold mb-4 flex items-center gap-2"><i class="ph-fill ph-clock-counter-clockwise text-islamic-500"></i> Riwayat Laporan Saya</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-gray-50 text-gray-600 text-sm">
                                         <th class="p-3 border-b">Tanggal</th>
                                         <th class="p-3 border-b">Status</th>
-                                        <th class="p-3 border-b">Detail</th>
                                     </tr>
                                 </thead>
-                                <tbody id="riwayat-body" class="text-sm">
-                                    <!-- Populated via JS -->
-                                </tbody>
+                                <tbody id="riwayat-body" class="text-sm"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- CONTENT: REKAP WA -->
             <div id="content-rekap" class="content-section hide">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Rekap Harian WhatsApp</h2>
-                        <p class="text-gray-500">Generate laporan format WhatsApp untuk di-share.</p>
-                    </div>
-                </div>
-
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
-                        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Filter Tanggal</h3>
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm h-fit">
+                        <h3 class="font-bold border-b pb-2 mb-4">Filter Tanggal</h3>
                         <input type="date" id="rekap-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4">
-                        <button onclick="generateWA()" class="w-full bg-islamic-900 text-white py-2 rounded-lg hover:bg-islamic-700 transition">
-                            Generate Format
-                        </button>
+                        <button onclick="generateWA()" class="w-full bg-islamic-900 text-white py-2 rounded-lg hover:bg-islamic-700">Generate Format</button>
                     </div>
-                    
-                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative">
-                        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Hasil Teks</h3>
-                        <textarea id="rekap-result" rows="20" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono text-gray-700 whitespace-pre-wrap outline-none" readonly></textarea>
-                        
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm relative">
+                        <h3 class="font-bold border-b pb-2 mb-4">Hasil Teks</h3>
+                        <textarea id="rekap-result" rows="15" class="w-full p-4 bg-gray-50 border rounded-lg text-sm font-mono whitespace-pre-wrap outline-none" readonly></textarea>
                         <div class="flex gap-2 mt-4 justify-end">
-                            <button onclick="copyWA()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 font-medium">
+                            <button onclick="copyWA()" class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 flex items-center gap-2 font-medium">
                                 <i class="ph ph-copy"></i> Copy Teks
                             </button>
-                            <button onclick="shareWA()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition flex items-center gap-2 font-medium shadow-md shadow-green-500/20">
+                            <button onclick="shareWA()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center gap-2 font-medium">
                                 <i class="ph ph-whatsapp-logo"></i> Share ke Grup
                             </button>
                         </div>
@@ -351,47 +303,35 @@
                 </div>
             </div>
 
-            <!-- CONTENT: DATA GURU -->
             <div id="content-guru" class="content-section hide">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Manajemen Data Guru</h2>
-                        <p class="text-gray-500">Kelola akun dan informasi asatidz.</p>
-                    </div>
-                    <button onclick="openModalGuru()" class="bg-islamic-900 text-white px-4 py-2 rounded-lg hover:bg-islamic-700 transition shadow-sm flex items-center gap-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Data Guru</h2>
+                    <button onclick="openModalGuru()" class="bg-islamic-900 text-white px-4 py-2 rounded-lg shadow-sm flex items-center gap-2">
                         <i class="ph-bold ph-plus"></i> Tambah Guru
                     </button>
                 </div>
-
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse whitespace-nowrap">
-                            <thead>
-                                <tr class="bg-gray-50 text-gray-600 text-sm border-b">
-                                    <th class="p-4 font-semibold">Nama</th>
-                                    <th class="p-4 font-semibold">Username</th>
-                                    <th class="p-4 font-semibold">Jabatan</th>
-                                    <th class="p-4 font-semibold">Status</th>
-                                    <th class="p-4 font-semibold text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-guru-body" class="text-sm divide-y divide-gray-100">
-                                <!-- Data injected via JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="bg-white rounded-xl shadow-sm overflow-x-auto border border-gray-100">
+                    <table class="w-full text-left whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-gray-50 border-b">
+                                <th class="p-4">Nama</th>
+                                <th class="p-4">Username</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-guru-body" class="divide-y divide-gray-100"></tbody>
+                    </table>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <!-- MODAL GURU -->
-    <div id="modal-guru" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hide opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95 transition-transform duration-300" id="modal-guru-content">
+    <div id="modal-guru" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hide opacity-0 transition-opacity">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md" id="modal-guru-content">
             <div class="flex justify-between items-center p-5 border-b border-gray-100">
-                <h3 class="font-bold text-lg text-gray-800" id="modal-title">Tambah Guru</h3>
-                <button onclick="closeModalGuru()" class="text-gray-400 hover:text-gray-600"><i class="ph-bold ph-x text-xl"></i></button>
+                <h3 class="font-bold text-lg" id="modal-title">Tambah Guru</h3>
+                <button onclick="closeModalGuru()" class="text-gray-400"><i class="ph-bold ph-x text-xl"></i></button>
             </div>
             <div class="p-5">
                 <form id="form-guru">
@@ -399,32 +339,32 @@
                     <input type="hidden" id="guru-row" value="">
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                        <input type="text" id="guru-nama" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500">
+                        <label class="block text-sm mb-1">Nama Lengkap</label>
+                        <input type="text" id="guru-nama" required class="w-full px-3 py-2 border rounded-lg outline-none focus:border-islamic-500">
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                            <input type="text" id="guru-username" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500">
+                            <label class="block text-sm mb-1">Username</label>
+                            <input type="text" id="guru-username" required class="w-full px-3 py-2 border rounded-lg outline-none">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                            <input type="text" id="guru-password" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500" placeholder="Kosongi jika tdk diubah">
+                            <label class="block text-sm mb-1">Password</label>
+                            <input type="text" id="guru-password" class="w-full px-3 py-2 border rounded-lg outline-none" placeholder="Isi untuk ubah">
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
-                            <select id="guru-jk" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500 bg-white">
+                            <label class="block text-sm mb-1">Jenis Kelamin</label>
+                            <select id="guru-jk" required class="w-full px-3 py-2 border rounded-lg outline-none">
                                 <option value="Laki-laki">Laki-laki</option>
                                 <option value="Perempuan">Perempuan</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                            <select id="guru-status" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500 bg-white">
+                            <label class="block text-sm mb-1">Status</label>
+                            <select id="guru-status" required class="w-full px-3 py-2 border rounded-lg outline-none">
                                 <option value="Aktif">Aktif</option>
                                 <option value="Tidak Aktif">Tidak Aktif</option>
                             </select>
@@ -432,20 +372,427 @@
                     </div>
                     
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
-                        <input type="text" id="guru-jabatan" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-islamic-500">
+                        <label class="block text-sm mb-1">Jabatan</label>
+                        <input type="text" id="guru-jabatan" required class="w-full px-3 py-2 border rounded-lg outline-none">
                     </div>
                     
                     <div class="flex justify-end gap-2">
-                        <button type="button" onclick="closeModalGuru()" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Batal</button>
-                        <button type="submit" class="px-4 py-2 text-white bg-islamic-900 rounded-lg hover:bg-islamic-700 transition shadow-md shadow-islamic-900/20">Simpan Data</button>
+                        <button type="button" onclick="closeModalGuru()" class="px-4 py-2 bg-gray-100 rounded-lg">Batal</button>
+                        <button type="submit" class="px-4 py-2 text-white bg-islamic-900 rounded-lg">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    
-    <!-- Link Script JS Eksternal -->
-    <script src="script.js"></script>
+
+    <script>
+        // =========================================================================
+        // URL WEB APP APPS SCRIPT ANDA DI BAWAH INI
+        // PASTIKAN AKSES: "Siapa saja / Anyone" SAAT DEPLOY
+        // =========================================================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznak6YpWdyOrsw30cOuhSYNFZN6AnE7tWVhv_fWkNsWNddNFm5qMHsaTYqbTZZ0z0O/exec';
+
+        let currentUser = null;
+        let chartInstance = null;
+        let globalTeachers = [];
+
+        async function fetchGAS(action, payload = {}) {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: action, payload: payload })
+                });
+                const data = await response.json();
+                if(!data.success) throw new Error(data.message);
+                return data;
+            } catch (error) {
+                if(error.message === 'Failed to fetch') throw new Error("Gagal terhubung ke Server Apps Script.");
+                throw error;
+            }
+        }
+
+        const showLoading = () => document.getElementById('loading-overlay').style.display = 'flex';
+        const hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
+        
+        const showAlert = (title, text, icon) => {
+            Swal.fire({ title: title, text: text, icon: icon, confirmButtonColor: '#064e3b', borderRadius: '1rem' });
+        };
+
+        const getTodayString = () => {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        };
+
+        window.onload = () => {
+            document.getElementById('form-login').addEventListener('submit', handleLogin);
+            document.getElementById('form-submit-laporan').addEventListener('submit', submitLaporan);
+            document.getElementById('form-guru').addEventListener('submit', saveGuru);
+
+            const juzSelect = document.getElementById('lap-juz');
+            for(let i=1; i<=30; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = `Juz ${i}`;
+                juzSelect.appendChild(opt);
+            }
+            
+            document.getElementById('lap-tanggal').value = getTodayString();
+            document.getElementById('rekap-date').value = getTodayString();
+            
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const d = new Date();
+            document.getElementById('form-date-display').innerText = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+            // SAFE SESSION LOADER (Mencegah Crash Layar Abu-Abu)
+            try {
+                const session = localStorage.getItem('tilawahSession');
+                if (session) {
+                    const parsed = JSON.parse(session);
+                    const userData = parsed.data || parsed;
+                    
+                    if (userData && typeof userData === 'object' && userData.nama) {
+                        currentUser = userData;
+                        initApp();
+                    } else {
+                        throw new Error("Sesi rusak");
+                    }
+                }
+            } catch(e) {
+                console.warn("Membersihkan sesi bermasalah...", e);
+                logout();
+            }
+        };
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('login-username').value;
+            const pass = document.getElementById('login-password').value;
+            
+            localStorage.removeItem('tilawahSession');
+            currentUser = null;
+            
+            showLoading();
+            try {
+                const res = await fetchGAS('login', { username: user, password: pass });
+                hideLoading();
+                
+                if(res.data && res.data.nama) {
+                    currentUser = res.data; 
+                    localStorage.setItem('tilawahSession', JSON.stringify(res.data));
+                    initApp();
+                } else {
+                    throw new Error("Data user dari server tidak lengkap.");
+                }
+            } catch (err) {
+                hideLoading();
+                showAlert('Gagal Login', err.message, 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('tilawahSession');
+            currentUser = null;
+            document.getElementById('view-app').classList.add('hide');
+            document.getElementById('view-login').classList.remove('hide');
+            document.getElementById('form-login').reset();
+        }
+
+        function initApp() {
+            document.getElementById('view-login').classList.add('hide');
+            document.getElementById('view-app').classList.remove('hide');
+            
+            const nama = currentUser.nama || 'User';
+            document.getElementById('user-name-display').innerText = nama;
+            document.getElementById('user-role-display').innerText = currentUser.role || 'Guru';
+            document.getElementById('user-initial').innerText = nama.charAt(0).toUpperCase();
+            document.getElementById('lap-nama').value = nama;
+
+            const adminEls = document.querySelectorAll('.admin-only');
+            if(currentUser.role !== 'Admin') {
+                adminEls.forEach(el => el.style.display = 'none');
+                navigate('laporan'); 
+            } else {
+                adminEls.forEach(el => el.style.display = 'flex');
+                navigate('dashboard'); 
+            }
+        }
+
+        function navigate(viewId) {
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hide'));
+            document.querySelectorAll('[id^="nav-"]').forEach(el => el.classList.remove('nav-active'));
+            
+            document.getElementById(`content-${viewId}`).classList.remove('hide');
+            document.getElementById(`nav-${viewId}`).classList.add('nav-active');
+            
+            document.getElementById('mobile-menu').classList.remove('flex');
+            document.getElementById('mobile-menu').classList.add('hidden');
+
+            if(viewId === 'dashboard') loadDashboard();
+            if(viewId === 'guru') loadTeachers();
+            if(viewId === 'laporan') loadMyReports();
+            if(viewId === 'rekap') generateWA();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+            }
+        }
+
+        async function loadDashboard() {
+            if(currentUser.role !== 'Admin') return;
+            showLoading();
+            try {
+                const res = await fetchGAS('getDashboardStats');
+                const d = res.data;
+                hideLoading();
+                
+                document.getElementById('stat-total').innerText = d.totalGuru;
+                document.getElementById('stat-sudah').innerText = d.sudahLapor;
+                document.getElementById('stat-belum').innerText = d.belumLapor;
+                document.getElementById('stat-progress').innerText = `${d.progress}%`;
+                document.getElementById('stat-bar').style.width = `${d.progress}%`;
+                
+                document.getElementById('det-khalas').innerText = d.khalas;
+                document.getElementById('det-sebagian').innerText = d.sebagian;
+                document.getElementById('det-murojaah').innerText = d.murojaah;
+                document.getElementById('det-hafalan').innerText = d.hafalan;
+                document.getElementById('det-tidak').innerText = d.tidakTilawah;
+
+                if(chartInstance) chartInstance.destroy();
+                chartInstance = new Chart(document.getElementById('tilawahChart').getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: d.chartLabels,
+                        datasets: [{
+                            label: 'Laporan',
+                            data: d.chartValues,
+                            borderColor: '#064e3b',
+                            backgroundColor: 'rgba(6, 78, 59, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            } catch (err) {
+                hideLoading();
+                showAlert('Error', err.message, 'error');
+            }
+        }
+
+        function handleStatusChange(checkbox) {
+            const val = checkbox.value;
+            const isNegative = val.includes("Tidak") || val.includes("Halangan");
+            
+            if (checkbox.checked) {
+                document.querySelectorAll('input[name="status"]').forEach(cb => {
+                    const cbIsNegative = cb.value.includes("Tidak") || cb.value.includes("Halangan");
+                    // Uncheck kebalikan
+                    if (isNegative && !cbIsNegative) cb.checked = false;
+                    if (!isNegative && cbIsNegative) cb.checked = false;
+                });
+            }
+            toggleJuzInput();
+        }
+
+        function toggleJuzInput() {
+            const khalasBox = document.getElementById('status-khalas');
+            const container = document.getElementById('juz-container');
+            const input = document.getElementById('lap-juz');
+            
+            if(khalasBox && khalasBox.checked) {
+                container.classList.remove('hide');
+                input.setAttribute('required', 'true');
+            } else {
+                container.classList.add('hide');
+                input.removeAttribute('required');
+                input.value = "";
+            }
+        }
+
+        async function submitLaporan(e) {
+            e.preventDefault();
+            const checked = document.querySelectorAll('input[name="status"]:checked');
+            if(checked.length === 0) return showAlert('Peringatan', 'Pilih minimal satu status.', 'warning');
+            
+            const statusValues = Array.from(checked).map(cb => cb.value).join(', ');
+
+            showLoading();
+            try {
+                const res = await fetchGAS('submitReport', {
+                    tanggal: document.getElementById('lap-tanggal').value,
+                    nama: currentUser.nama,
+                    status: statusValues,
+                    juz: document.getElementById('lap-juz').value,
+                    catatan: document.getElementById('lap-catatan').value
+                });
+                hideLoading();
+                Swal.fire({ title: 'Alhamdulillah', text: res.data.message, icon: 'success', confirmButtonColor: '#064e3b' });
+                document.getElementById('lap-catatan').value = ''; 
+                loadMyReports();
+            } catch (err) {
+                hideLoading();
+                showAlert('Error', err.message, 'error');
+            }
+        }
+
+        async function loadMyReports() {
+            try {
+                const res = await fetchGAS('getReportsForUser', { nama: currentUser.nama });
+                const tbody = document.getElementById('riwayat-body');
+                tbody.innerHTML = '';
+                
+                if(res.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="p-4 text-center text-gray-500">Belum ada riwayat</td></tr>';
+                    return;
+                }
+                
+                res.data.forEach(rep => {
+                    let s = rep.status;
+                    let icons = "";
+                    if(s.includes("Khalas")) icons += `✅ Juz ${rep.juz} `;
+                    if(s.includes("sebagian")) icons += "📖 ";
+                    if(s.includes("Muroja")) icons += "Ⓜ️ ";
+                    if(s.includes("Hafalan")) icons += "💬 ";
+                    if(s.includes("Halangan")) icons += "🩸 ";
+                    if(s.includes("Tidak")) icons += "❌ ";
+                    
+                    let tr = `<tr class="border-b hover:bg-gray-50">
+                        <td class="p-3">${rep.tanggal}</td>
+                        <td class="p-3"><span class="bg-gray-100 px-2 py-1 rounded text-xs border">${icons}</span></td>
+                    </tr>`;
+                    tbody.innerHTML += tr;
+                });
+            } catch(e) {}
+        }
+
+        async function generateWA() {
+            if(currentUser.role !== 'Admin') return;
+            const ds = document.getElementById('rekap-date').value;
+            if(!ds) return;
+            
+            showLoading();
+            try {
+                const res = await fetchGAS('getWARecap', { dateString: ds });
+                hideLoading();
+                document.getElementById('rekap-result').value = res.data;
+            } catch (err) {
+                hideLoading();
+                showAlert('Error', err.message, 'error');
+            }
+        }
+
+        function copyWA() {
+            document.getElementById('rekap-result').select();
+            document.execCommand('copy');
+            Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, icon: 'success', title: 'Teks disalin' });
+        }
+
+        function shareWA() {
+            const txt = encodeURIComponent(document.getElementById('rekap-result').value);
+            window.open(`https://wa.me/?text=${txt}`, '_blank');
+        }
+
+        async function loadTeachers() {
+            if(currentUser.role !== 'Admin') return;
+            showLoading();
+            try {
+                const res = await fetchGAS('getTeachers');
+                hideLoading();
+                globalTeachers = res.data;
+                const tbody = document.getElementById('table-guru-body');
+                tbody.innerHTML = '';
+                
+                globalTeachers.forEach((t, i) => {
+                    let badge = t.status === 'Aktif' ? '<span class="text-green-600 bg-green-100 px-2 py-1 rounded text-xs">Aktif</span>' : '<span class="text-red-600 bg-red-100 px-2 py-1 rounded text-xs">Non-Aktif</span>';
+                    tbody.innerHTML += `<tr>
+                        <td class="p-4">${t.jk === 'Laki-laki' ? '👨‍🏫' : '👩‍🏫'} ${t.nama}</td>
+                        <td class="p-4 text-gray-500">${t.username}</td>
+                        <td class="p-4">${badge}</td>
+                        <td class="p-4 text-right">
+                            <button onclick="editGuru(${i})" class="text-indigo-600 mr-2"><i class="ph ph-pencil-simple text-lg"></i></button>
+                            <button onclick="deleteGuru(${t.row})" class="text-red-600"><i class="ph ph-trash text-lg"></i></button>
+                        </td>
+                    </tr>`;
+                });
+            } catch (err) { hideLoading(); showAlert('Error', err.message, 'error'); }
+        }
+
+        function openModalGuru() {
+            document.getElementById('form-guru').reset();
+            document.getElementById('guru-action').value = 'add';
+            document.getElementById('guru-password').setAttribute('required', 'true');
+            const m = document.getElementById('modal-guru');
+            m.classList.remove('hide');
+            setTimeout(() => m.classList.remove('opacity-0'), 10);
+        }
+
+        function closeModalGuru() {
+            const m = document.getElementById('modal-guru');
+            m.classList.add('opacity-0');
+            setTimeout(() => m.classList.add('hide'), 300);
+        }
+
+        function editGuru(i) {
+            const t = globalTeachers[i];
+            document.getElementById('guru-action').value = 'edit';
+            document.getElementById('guru-row').value = t.row;
+            document.getElementById('guru-nama').value = t.nama;
+            document.getElementById('guru-username').value = t.username;
+            document.getElementById('guru-password').removeAttribute('required');
+            document.getElementById('guru-jk').value = t.jk;
+            document.getElementById('guru-status').value = t.status;
+            document.getElementById('guru-jabatan').value = t.jabatan;
+            
+            const m = document.getElementById('modal-guru');
+            m.classList.remove('hide');
+            setTimeout(() => m.classList.remove('opacity-0'), 10);
+        }
+
+        async function saveGuru(e) {
+            e.preventDefault();
+            const data = {
+                action: document.getElementById('guru-action').value,
+                row: document.getElementById('guru-row').value,
+                nama: document.getElementById('guru-nama').value,
+                username: document.getElementById('guru-username').value,
+                password: document.getElementById('guru-password').value,
+                jk: document.getElementById('guru-jk').value,
+                status: document.getElementById('guru-status').value,
+                jabatan: document.getElementById('guru-jabatan').value
+            };
+            showLoading();
+            try {
+                await fetchGAS('saveTeacher', data);
+                hideLoading();
+                closeModalGuru();
+                Swal.fire('Berhasil', 'Data disimpan', 'success');
+                loadTeachers();
+            } catch (err) { hideLoading(); showAlert('Error', err.message, 'error'); }
+        }
+
+        function deleteGuru(row) {
+            Swal.fire({ title: 'Hapus data?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus' })
+            .then(async (result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    try {
+                        await fetchGAS('deleteTeacher', { row: row });
+                        hideLoading();
+                        Swal.fire('Dihapus!', '', 'success');
+                        loadTeachers();
+                    } catch(err) { hideLoading(); showAlert('Error', err.message, 'error'); }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
