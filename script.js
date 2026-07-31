@@ -168,6 +168,7 @@ async function loadDashboard() {
         document.getElementById('stat-bar').style.width = `${data.progress}%`;
         
         document.getElementById('det-khalas').innerText = data.khalas;
+        document.getElementById('det-sebagian').innerText = data.sebagian;
         document.getElementById('det-murojaah').innerText = data.murojaah;
         document.getElementById('det-hafalan').innerText = data.hafalan;
         document.getElementById('det-tidak').innerText = data.tidakTilawah;
