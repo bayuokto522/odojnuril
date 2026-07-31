@@ -249,12 +249,28 @@ function renderChart(labels, data) {
     });
 }
 
+function handleStatusChange(checkbox) {
+    const val = checkbox.value;
+    const isNegative = val.includes("Tidak") || val.includes("Halangan");
+    
+    // Jika user pilih "Tidak Tilawah/Halangan", uncheck status membaca
+    // Sebaliknya, jika pilih membaca, uncheck "Tidak Tilawah/Halangan"
+    if (checkbox.checked) {
+        document.querySelectorAll('input[name="status"]').forEach(cb => {
+            const cbIsNegative = cb.value.includes("Tidak") || cb.value.includes("Halangan");
+            if (isNegative && !cbIsNegative) cb.checked = false;
+            if (!isNegative && cbIsNegative) cb.checked = false;
+        });
+    }
+    toggleJuzInput();
+}
+
 function toggleJuzInput() {
-    const status = document.getElementById('lap-status').value;
+    const khalasCheckbox = document.getElementById('status-khalas');
     const container = document.getElementById('juz-container');
     const input = document.getElementById('lap-juz');
     
-    if(status.includes("Khalas Juz")) {
+    if(khalasCheckbox && khalasCheckbox.checked) {
         container.classList.remove('hide');
         input.setAttribute('required', 'true');
     } else {
@@ -266,10 +282,21 @@ function toggleJuzInput() {
 
 async function submitLaporan(e) {
     e.preventDefault();
+    
+    // Kumpulkan semua status yang dicentang
+    const checkedBoxes = document.querySelectorAll('input[name="status"]:checked');
+    if(checkedBoxes.length === 0) {
+        showAlert('Peringatan', 'Silakan pilih minimal satu status tilawah.', 'warning');
+        return;
+    }
+    
+    // Gabungkan menjadi string contoh: "✅ Khalas Juz, Ⓜ️ Muroja'ah"
+    const statusValues = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
+
     const data = {
         tanggal: document.getElementById('lap-tanggal').value,
         nama: currentUser.nama,
-        status: document.getElementById('lap-status').value,
+        status: statusValues,
         juz: document.getElementById('lap-juz').value,
         catatan: document.getElementById('lap-catatan').value
     };
@@ -306,14 +333,19 @@ async function loadMyReports() {
         
         data.forEach(rep => {
             let icon = "";
-            if(rep.status.includes("Khalas")) icon = "✅";
-            else if(rep.status.includes("Tilawah")) icon = "📖";
-            else if(rep.status.includes("Muroja'ah")) icon = "Ⓜ️";
-            else if(rep.status.includes("Hafalan")) icon = "💬";
-            else if(rep.status.includes("Halangan")) icon = "🩸";
-            else icon = "❌";
+            let repStatus = String(rep.status);
+            
+            // Tampilkan ikon ganda jika statusnya ganda (pakai if bukan else if)
+            if(repStatus.includes("Khalas")) icon += "✅";
+            if(repStatus.includes("Tilawah")) icon += "📖";
+            if(repStatus.includes("Muroja'ah") || repStatus.includes("Murojaah")) icon += "Ⓜ️";
+            if(repStatus.includes("Hafalan")) icon += "💬";
+            if(repStatus.includes("Halangan")) icon += "🩸";
+            if(repStatus.includes("Tidak Tilawah")) icon += "❌";
 
-            let detail = rep.status.includes("Khalas") ? `Juz ${rep.juz}` : rep.status;
+            let detail = repStatus.includes("Khalas") && rep.juz 
+                ? repStatus.replace("✅ Khalas Juz", `✅ Juz ${rep.juz}`) 
+                : repStatus;
             
             let tr = `<tr class="border-b hover:bg-gray-50">
                 <td class="p-3 whitespace-nowrap">${rep.tanggal}</td>
