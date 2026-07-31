@@ -17,12 +17,21 @@ async function fetchGAS(action, payload = {}) {
             body: JSON.stringify({ action: action, payload: payload })
         });
         
-        const data = await response.json();
+        let data;
+        try {
+            data = await response.json();
+        } catch (err) {
+            throw new Error("Server salah merespons. Pastikan URL Web App benar dan Akses Deploy disetel ke 'Siapa saja' (Anyone).");
+        }
+
         if(!data.success && data.message) {
             throw new Error(data.message);
         }
         return data; // Mengembalikan object json dari backend
     } catch (error) {
+        if(error.message === 'Failed to fetch') {
+            throw new Error("Gagal terhubung. Pastikan internet aktif dan Akses Deploy Apps Script adalah 'Siapa saja'.");
+        }
         throw error;
     }
 }
@@ -73,18 +82,16 @@ window.onload = () => {
     if(session) {
         try {
             let parsedSession = JSON.parse(session);
-            // Perbaikan untuk mencegah error (jika sesi yang tersimpan formatnya salah)
             if(parsedSession.success && parsedSession.data) {
                 parsedSession = parsedSession.data;
             }
             
-            // Validasi apakah user valid
-            if(parsedSession && parsedSession.nama) {
+            // Validasi ketat untuk mencegah UI Crash
+            if(parsedSession && typeof parsedSession === 'object' && parsedSession.nama) {
                 currentUser = parsedSession;
-                localStorage.setItem('tilawahSession', JSON.stringify(currentUser)); // perbarui dengan format benar
+                localStorage.setItem('tilawahSession', JSON.stringify(currentUser));
                 initApp();
             } else {
-                // Sesi rusak, hapus sesi
                 logout(); 
             }
         } catch(e) {
@@ -98,16 +105,21 @@ async function handleLogin(e) {
     const user = document.getElementById('login-username').value;
     const pass = document.getElementById('login-password').value;
     
+    // Bersihkan sesi lama yang mungkin error
+    localStorage.removeItem('tilawahSession');
+    currentUser = null;
+    
     showLoading();
     try {
         const res = await fetchGAS('login', { username: user, password: pass });
         hideLoading();
         
-        if(res.success) {
-            // FIX: Simpan res.data (bukan res wrapper-nya)
+        if(res && res.success && res.data) {
             currentUser = res.data; 
             localStorage.setItem('tilawahSession', JSON.stringify(res.data));
             initApp();
+        } else {
+            throw new Error("Data yang diterima dari sistem tidak lengkap.");
         }
     } catch (err) {
         hideLoading();
@@ -124,16 +136,26 @@ function logout() {
 }
 
 function initApp() {
+    if (!currentUser) {
+        logout();
+        return;
+    }
+
     document.getElementById('view-login').classList.add('hide');
     document.getElementById('view-app').classList.remove('hide');
     
-    document.getElementById('user-name-display').innerText = currentUser.nama;
-    document.getElementById('user-role-display').innerText = currentUser.role;
-    document.getElementById('user-initial').innerText = currentUser.nama.charAt(0).toUpperCase();
-    document.getElementById('lap-nama').value = currentUser.nama;
+    // Fallback Data agar tidak TypeError undefined
+    const namaUser = currentUser.nama || 'User';
+    const roleUser = currentUser.role || 'Guru';
+    const inisial = namaUser.charAt(0) ? namaUser.charAt(0).toUpperCase() : 'U';
+    
+    document.getElementById('user-name-display').innerText = namaUser;
+    document.getElementById('user-role-display').innerText = roleUser;
+    document.getElementById('user-initial').innerText = inisial;
+    document.getElementById('lap-nama').value = namaUser;
 
     const adminEls = document.querySelectorAll('.admin-only');
-    if(currentUser.role !== 'Admin') {
+    if(roleUser !== 'Admin') {
         adminEls.forEach(el => el.style.display = 'none');
         navigate('laporan'); 
     } else {
